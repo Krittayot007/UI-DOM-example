@@ -1,0 +1,57 @@
+// IMPORT:Other Module
+const path = require('path');
+const { merge } = require('webpack-merge');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+// IMPORT:Our Module
+const commonConfig = require('./webpack.config');
+
+// #################################
+const devConfig = merge(commonConfig, {
+    mode : 'production',
+
+    output: {
+        path: path.resolve(__dirname, 'docs'),
+        filename: '[name].[hash].min.js', // .min = minify == remove all code comment and write space
+        assetModuleFilename: 'images/[hash][ext][query]',
+    },
+
+    module: {
+        rules: [
+            {
+                test: /\.s?css$/i, // เฉพาะกับ .css .scss
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'], // ใช้ loader อะไรบ้าง
+            },
+        ],
+    },
+
+     // PLUGIN
+     plugins: [
+        new MiniCssExtractPlugin(),
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+        template: './src/template/index.html',
+        }),
+    ],
+
+    optimization: {
+        minimizer: [
+            new TerserPlugin(),
+            new CssMinimizerPlugin(),
+            new HtmlWebpackPlugin({
+                template: './src/template/index.html',
+                filename: 'index.min.html',
+                minify: {
+                    removeAttributeQuotes: true,
+                    collapseWhitespace: true,
+                    removeComments: true,
+                },
+            }),
+        ],
+    },
+})
+
+module.exports = devConfig;
