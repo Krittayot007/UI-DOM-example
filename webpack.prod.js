@@ -10,7 +10,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const commonConfig = require('./webpack.config');
 
 // #################################
-const devConfig = merge(commonConfig, {
+const prodConfig = merge(commonConfig, {
     mode : 'production',
 
     output: {
@@ -32,9 +32,6 @@ const devConfig = merge(commonConfig, {
      plugins: [
         new MiniCssExtractPlugin(),
         new CleanWebpackPlugin(),
-        new HtmlWebpackPlugin({
-        template: './src/template/index.html',
-        }),
     ],
 
     optimization: {
@@ -43,7 +40,6 @@ const devConfig = merge(commonConfig, {
             new CssMinimizerPlugin(),
             new HtmlWebpackPlugin({
                 template: './src/template/index.html',
-                filename: 'index.min.html',
                 minify: {
                     removeAttributeQuotes: true,
                     collapseWhitespace: true,
@@ -54,4 +50,4 @@ const devConfig = merge(commonConfig, {
     },
 })
 
-module.exports = devConfig;
+module.exports = prodConfig;
